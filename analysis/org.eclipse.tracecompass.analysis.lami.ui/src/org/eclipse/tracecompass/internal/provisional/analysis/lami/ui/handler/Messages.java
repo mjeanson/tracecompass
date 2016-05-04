@@ -30,6 +30,8 @@ public class Messages extends NLS {
     public static String ParameterDialog_ExternalParametersDescription;
     public static String ParameterDialog_StringValidatorMessage;
     public static String ParameterDialog_ReportNameSuffix;
+    public static String ParameterDialog_Info;
+    public static String ParameterDialog_InfoMessage;
     public static String ParameterDialog_Error;
     public static String ParameterDialog_ErrorMessage;
     public static String AddAnalysisDialog_Name;

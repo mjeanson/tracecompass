@@ -138,18 +138,38 @@ public class RunAnalysisHandler extends AbstractHandler {
                     return Status.OK_STATUS;
 
                 } catch (OnDemandAnalysisException e) {
-                    String errMsg = e.getMessage();
+                    /*
+                     * The analysis execution did not complete normally, we will
+                     * report it to the user.
+                     */
+                    String message = e.getMessage();
 
-                    if (errMsg != null) {
-                        /* The analysis execution yielded an error */
-                        Display.getDefault().asyncExec(() -> {
-                            MessageDialog.openError(shell,
-                                    /* Dialog title */
-                                    Messages.ParameterDialog_Error,
-                                    /* Dialog message */
-                                    Messages.ParameterDialog_ErrorMessage + ":\n\n" + //$NON-NLS-1$
-                                            errMsg);
-                        });
+                    if (message != null) {
+                        Runnable showMessageRunner;
+                        switch (e.getSeverity()) {
+                        case INFO:
+                            showMessageRunner = () -> {
+                                MessageDialog.openInformation(shell,
+                                        /* Dialog title */
+                                        Messages.ParameterDialog_Info,
+                                        /* Dialog message */
+                                        Messages.ParameterDialog_InfoMessage + ":\n\n" + message); //$NON-NLS-1$
+                            };
+
+                            break;
+                        case ERROR:
+                        default:
+                            showMessageRunner = () -> {
+                                MessageDialog.openError(shell,
+                                        /* Dialog title */
+                                        Messages.ParameterDialog_Error,
+                                        /* Dialog message */
+                                        Messages.ParameterDialog_ErrorMessage + ":\n\n" + message); //$NON-NLS-1$
+                            };
+                            break;
+                        }
+
+                        Display.getDefault().asyncExec(showMessageRunner);
                     }
 
                     return Status.CANCEL_STATUS;

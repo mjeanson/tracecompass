@@ -22,7 +22,20 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class OnDemandAnalysisException extends Exception {
 
+    /**
+     * How bad the exception is. This can help determine how the problem should
+     * be presented to the user.
+     */
+    public enum Severity {
+        /** Information */
+        INFO,
+        /** Error */
+        ERROR
+    }
+
     private static final long serialVersionUID = 7296987172562152876L;
+
+    private final Severity fSeverity;
 
     /**
      * Build a new exception. If the message is not null, it should be reported
@@ -30,14 +43,26 @@ public class OnDemandAnalysisException extends Exception {
      *
      * @param message
      *            The message to display, if any
+     * @param severity
+     *            Severity of the exception
      */
-    public OnDemandAnalysisException(@Nullable String message) {
+    public OnDemandAnalysisException(@Nullable String message, Severity severity) {
         super(message);
+        fSeverity = severity;
     }
 
     @Override
     public @Nullable String getMessage() {
         return super.getMessage();
+    }
+
+    /**
+     * Get the indicated severity of this exception.
+     *
+     * @return The severity
+     */
+    public Severity getSeverity() {
+        return fSeverity;
     }
 
 }

@@ -55,6 +55,7 @@ import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.types.La
 import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.types.LamiTimeRange;
 import org.eclipse.tracecompass.tmf.core.analysis.ondemand.IOnDemandAnalysis;
 import org.eclipse.tracecompass.tmf.core.analysis.ondemand.OnDemandAnalysisException;
+import org.eclipse.tracecompass.tmf.core.analysis.ondemand.OnDemandAnalysisException.Severity;
 import org.eclipse.tracecompass.tmf.core.timestamp.TmfTimeRange;
 import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.json.JSONArray;
@@ -511,7 +512,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
         String output = getResultsFromCommand(command, monitor);
 
         if (output.isEmpty()) {
-            throw new OnDemandAnalysisException(Messages.LamiAnalysis_NoResults);
+            throw new OnDemandAnalysisException(Messages.LamiAnalysis_NoResults, Severity.INFO);
         }
 
         /*
@@ -585,7 +586,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
                  * No results were reported. This may be normal, but warn the
                  * user why a report won't be created.
                  */
-                throw new OnDemandAnalysisException(Messages.LamiAnalysis_NoResults);
+                throw new OnDemandAnalysisException(Messages.LamiAnalysis_NoResults, Severity.INFO);
             }
 
             for (int i = 0; i < results.length(); i++) {
@@ -652,7 +653,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
             }
 
         } catch (JSONException e) {
-            throw new OnDemandAnalysisException(e.getMessage());
+            throw new OnDemandAnalysisException(e.getMessage(), Severity.ERROR);
         }
 
         return resultsBuilder.build();
@@ -792,7 +793,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
 
             if (monitor.isCanceled()) {
                 /* We were interrupted by the canceller thread. */
-                throw new OnDemandAnalysisException(null);
+                throw new OnDemandAnalysisException(null, Severity.INFO);
             }
 
             if (ret != 0) {
@@ -802,7 +803,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
                  */
                 BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                 String stdErrOutput = br.lines().collect(Collectors.joining("\n")); //$NON-NLS-1$
-                throw new OnDemandAnalysisException(stdErrOutput);
+                throw new OnDemandAnalysisException(stdErrOutput, Severity.ERROR);
             }
 
             /* External script ended successfully, all is fine! */
@@ -810,7 +811,7 @@ public class LamiAnalysis implements IOnDemandAnalysis {
             return checkNotNull(resultsStr);
 
         } catch (IOException | InterruptedException e) {
-            throw new OnDemandAnalysisException(Messages.LamiAnalysis_ExecutionInterrupted);
+            throw new OnDemandAnalysisException(Messages.LamiAnalysis_ExecutionInterrupted, Severity.ERROR);
 
         } finally {
             if (cancellerRunnable != null) {
