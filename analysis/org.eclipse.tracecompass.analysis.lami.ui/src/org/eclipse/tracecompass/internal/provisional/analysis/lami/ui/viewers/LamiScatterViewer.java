@@ -259,24 +259,25 @@ public class LamiScatterViewer extends LamiXYChartViewer {
             yTick.setFormat(new LamiLabelFormat(checkNotNull(yMap)));
             updateTickMark(checkNotNull(yMap), yTick, getChart().getPlotArea().getSize().y);
 
-            /*
-             * SWTChart workaround: SWTChart fiddles with tick mark visibility
-             * based on the fact that it can parse the label to double or not.
-             *
-             * If the label happens to be a double, it checks for the presence
-             * of that value in its own tick labels to decide if it should add
-             * it or not. If it happens that the parsed value is already present
-             * in its map, the tick gets a visibility of false.
-             *
-             * The X axis does not have this problem since SWTCHART checks on
-             * label angle, and if it is != 0 simply does no logic regarding
-             * visibility. So simply set a label angle of 1 to the axis.
-             */
-            yTick.setTickLabelAngle(1);
-
             /* Remove horizontal grid line */
             getChart().getAxisSet().getYAxis(0).getGrid().setStyle(LineStyle.NONE);
         }
+
+        /*
+         * SWTCHART workaround: Swtchart fiddle with tick mark visibility
+         * based on the fact that it can parse the label to double or not.
+         * If the label happen to be a double it check for the presence of
+         * the value in it's own tick labels to value map for it presence.
+         * If it happen that the parsed value is not present in the map the
+         * tick get a visibility of false. The X axis does not have this
+         * problem since SWTCHART check on label angle and if !=0 simply do
+         * no logic regarding visibility. So simply set a label angle of 1
+         * to the axis.
+         *
+         * The same logic applies for custom time formatter.
+         *
+         */
+        yTick.setTickLabelAngle(1);
 
         setLineSeriesColor();
 
