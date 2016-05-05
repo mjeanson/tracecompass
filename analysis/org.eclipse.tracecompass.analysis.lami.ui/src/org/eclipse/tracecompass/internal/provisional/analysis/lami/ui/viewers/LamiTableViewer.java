@@ -194,6 +194,10 @@ public final class LamiTableViewer extends TmfSimpleTableViewer implements ILami
             }
         });
         Display.getDefault().asyncExec(() -> {
+            if (tableViewer.getTable().isDisposed()) {
+                return;
+            }
+
             TableColumn[] cols = tableViewer.getTable().getColumns();
             for (int i = 0; i < cols.length; i++) {
                 cols[i].pack();
@@ -225,6 +229,10 @@ public final class LamiTableViewer extends TmfSimpleTableViewer implements ILami
                 .toArray();
 
         fSelections = new HashSet<>(selections);
+
+        if (fSelections.isEmpty()) {
+            return;
+        }
 
         Display.getDefault().asyncExec(() -> {
             getTableViewer().getTable().setSelection(selectionsIndexes);
