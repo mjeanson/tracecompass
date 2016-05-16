@@ -59,4 +59,13 @@ public class LamiTimeStampFormat extends SimpleDateFormat {
         }
         return new StringBuffer();
     }
+
+    /**
+     * Get the pattern string of the format.
+     *
+     * @return the pattern string.
+     */
+    public String getPattern() {
+        return fFormat.toPattern();
+    }
 }

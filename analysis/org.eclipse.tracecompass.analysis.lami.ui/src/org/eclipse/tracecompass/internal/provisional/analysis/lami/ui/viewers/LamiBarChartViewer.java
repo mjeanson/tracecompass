@@ -11,6 +11,7 @@ package org.eclipse.tracecompass.internal.provisional.analysis.lami.ui.viewers;
 
 import static org.eclipse.tracecompass.common.core.NonNullUtils.checkNotNull;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -38,6 +39,7 @@ import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.module.L
 import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.module.LamiChartModel.ChartType;
 import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.module.LamiResultTable;
 import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.module.LamiTableEntry;
+import org.eclipse.tracecompass.internal.provisional.analysis.lami.core.module.LamiTimeStampFormat;
 import org.eclipse.tracecompass.internal.provisional.analysis.lami.ui.signals.LamiSelectionUpdateSignal;
 import org.eclipse.tracecompass.tmf.core.signal.TmfSignalManager;
 import org.swtchart.IAxis;
@@ -180,7 +182,12 @@ public class LamiBarChartViewer extends LamiXYChartViewer {
 
         /* Set the formatter on the Y axis */
         IAxisTick yTick = getChart().getAxisSet().getYAxis(0).getTick();
-        yTick.setFormat(getContinuousAxisFormatter(yAxisAspects, entries));
+        Format yAxisFormat = getContinuousAxisFormatter(yAxisAspects, entries);
+        yTick.setFormat(yAxisFormat);
+
+        if (yAxisFormat instanceof LamiTimeStampFormat) {
+            setYUnits(((LamiTimeStampFormat) yAxisFormat).getPattern());
+        }
 
         /* Adjust the chart range */
         getChart().getAxisSet().adjustRange();
